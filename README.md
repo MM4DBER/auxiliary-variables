@@ -12,11 +12,11 @@
 
 The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and Educators (`IMMERSE`) is an IES funded training grant (R305B220021) to support education scholars in integrating mixture modeling into their research.
 
-> Visit our [$\color{blue}{\text{Website}}$](https://immerse.education.ucsb.edu/) to learn more about the IMMERSE project.
+> Visit our [Website](https://immerse.education.ucsb.edu/) to learn more about the IMMERSE project.
 
-> Follow us on [$\color{blue}{\text{Twitter}}$](https://twitter.com/IMMERSE_UCSB) for updates on posted resources!
+> Follow us on [Twitter](https://twitter.com/IMMERSE_UCSB) for updates on posted resources!
 
-> Visit our [$\color{blue}{\text{GitHub}}$](https://github.com/immerse-ucsb/) account to follow along with this tutorial & others. 
+> Visit our [GitHub](https://github.com/immerse-ucsb/) account to follow along with this tutorial & others. 
 
 - - -
 
@@ -30,7 +30,7 @@ The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and
 
 **Follow along! Link to `Github` repository:**
 
-$\color{blue}{\text{https://github.com/immerse-ucsb/interpret-aux-vars}}$
+https://github.com/immerse-ucsb/interpret-aux-vars
 
 
 - - -
@@ -174,8 +174,8 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ![](figures/EX1_Distal_Diagram.png)
 
+- - -
 
-# -------------------------------------------------------------------------------------
 
 ```{r}
 

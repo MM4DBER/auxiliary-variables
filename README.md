@@ -2,7 +2,7 @@
 
 - - -
 
-### "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal Moderation Model Examples
+### "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal & Moderation Model Examples
 
 #### IMMERSE Project: Adam Garber
 

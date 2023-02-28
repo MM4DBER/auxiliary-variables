@@ -8,7 +8,7 @@
 
 - - -
 
-![]("figures/IESNewLogo.jpg")
+![](figures/IESNewLogo.jpg)
 
 The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and Educators (`IMMERSE`) is an IES funded training grant (R305B220021) to support education scholars in integrating mixture modeling into their research.
 
@@ -186,7 +186,7 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ![](figures/EX1_Distal_Diagram.png)
 
-# -------------------------------------------------------------------------------------
+- - -
 
 Specify the distal outcome model 
 ```{r}
@@ -325,11 +325,12 @@ ggplot(distal_data,
 
 ```
 
+
 ```{r}
 ggsave(here("figures","EX1_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-
+![](figures/EX1_Distal_barplot.png)
 
 - - -
 
@@ -487,6 +488,8 @@ ggplot(distal_data,
 ```{r}
 ggsave(here("figures","EX2_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
+
+![](figures/EX2_Distal_barplot.png)
 
 - - -
 
@@ -675,6 +678,8 @@ ggplot(distal_data,
 ggsave(here("figures","EX3_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
+#### ![](figures/EX3_Distal_barplot.png)
+
 - - -
 
 ## EX3: Simple Slope Plots
@@ -792,6 +797,8 @@ r_plot / m_plot # combines plots using the {patchwork} package
 ```{r}
 ggsave(here("figures", "EX3_Simple_slopes.png"), dpi=300, height=8.5, width=6.5, units="in")
 ```
+
+![](figures/EX3_Simple_slopes.png)
 
 - - -
 

@@ -740,7 +740,7 @@ read_pos <- melt(read_wide, id.vars = "LatentClass") %>%
 
 ```
 
-Plot positive mood simple slope graph
+Reading test simple slope graph
 ```{r}
 r_plot <- ggplot(read_pos,
             aes(y=value, x=variable,
@@ -761,7 +761,7 @@ r_plot <- ggplot(read_pos,
 
 - - -
 
-## Negative mood simple slope graph 
+## Math test simple slope graph 
 
 - - -
 
@@ -785,7 +785,7 @@ plot_math <- melt(math_wide, id.vars = "LatentClass") %>%
 
 ```
 
-Plot negative mood simple slope graph
+Plot math test simple slope graph
 ```{r}
 m_plot <- ggplot(plot_math,
             aes(y=value, x=variable,
@@ -805,7 +805,7 @@ m_plot <- ggplot(plot_math,
 
 - - -
 
-## Combine the two simple slopes graphs for distal outcomes positive & negative mood
+## Combine the two simple slopes graphs
 
 ```{r}
 

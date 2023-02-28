@@ -1,0 +1,29 @@
+TITLE:
+Step2  (MANUAL 3-STEP ML APPROACH)
+DATA:
+FILE = "/Users/agarber/github/interpret-aux-vars/3step_mplus/Step2_3step.dat";
+ 
+VARIABLE:
+NAMES = REPORT_D REPORT_R REPORT_S COUNSELO PSYCH_FT LAW_FTE LUNCH_PR TITLE1_E
+     TITLE1_S READ_TES MATH_TES CPROB1 CPROB2 CPROB3 N; 
+ MISSING=.;
+ nominal=N;
+  USEVAR = n;
+  missing are all (999); 
+  classes = c(3); 
+ANALYSIS:
+estimator = mlr; 
+  type = mixture; 
+  starts = 0;
+MODEL:
+%C#1%
+[n#1@1.192];
+[n#2@-3.911];
+
+%C#2%
+[n#1@0.28];
+[n#2@2.292];
+
+%C#3%
+[n#1@-1.936];
+[n#2@-4.247];

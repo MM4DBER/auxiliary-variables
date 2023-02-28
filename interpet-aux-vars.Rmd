@@ -1,14 +1,22 @@
-## Video tutorial repository: interpret-aux-vars
+---
+title: "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal & Moderation Model Examples"
+author: "IMMERSE Project: Adam Garber"
+date: '`r format(Sys.time(), "%B, %d,  %Y")`'
+output:
+  pdf_document: default
+  html_document: default
+---
 
-- - -
+```{r setup, include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(eval = FALSE, echo = TRUE, message = FALSE, warning = FALSE) 
+library(knitr); library(tidyverse); library(gt) 
+```
 
-### "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal Moderation Model Examples
+# --------------------------------------------------------------------------------------
 
-#### IMMERSE Project: Adam Garber
-
-- - -
-
-![]("figures/IESNewLogo.jpg")
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="40%"}
+include_graphics("figures/IESNewLogo.jpg")
+```
 
 The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and Educators (`IMMERSE`) is an IES funded training grant (R305B220021) to support education scholars in integrating mixture modeling into their research.
 
@@ -18,7 +26,7 @@ The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and
 
 > Visit our [$\color{blue}{\text{GitHub}}$](https://github.com/immerse-ucsb/) account to follow along with this tutorial & others. 
 
-- - -
+# -------------------------------------------------------------------------------------- 
 
 ## What is included in this video tutorial?
 
@@ -26,14 +34,14 @@ The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and
 
 \newpage
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Follow along! Link to `Github` repository:**
 
 $\color{blue}{\text{https://github.com/immerse-ucsb/interpret-aux-vars}}$
 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ### Data Source: Civil Rights Data Collection (CRDC)
 
@@ -43,15 +51,45 @@ $\color{blue}{\text{https://github.com/immerse-ucsb/interpret-aux-vars}}$
 
 **Data access (`R`):** https://github.com/UrbanInstitute/education-data-package-r
 
-- - -
+```{r, eval=TRUE, echo=FALSE}
+### Take a look at the indicators that compose the LCA ###
 
-![]("figures","Variable_description.png"))
+table1 <- tribble(
+~"Name", ~"Description", 
+#----------|-------------|,
+"report_dis"  , "Number of students harassed or bullied on the basis of disability" ,
+"report_race" , "Number of students harassed or bullied on the basis of race, color, or national origin " ,
+"report_sex" , "Number of students harassed or bullied on the basis of sex" ,
+"counselors_fte"  , "Number of full time equivalent counselors hired as school staff" ,
+"psych_fte"   , " Number of full time equivalent psychologists hired as school staff" ,
+"law_fte"   , "Number of full time equivalent law enforcement officers hired as school staff" ,
+"lunch_program"   , "School has a lunch program (0=No lunch program, 1=Lunch program at school).",
+"read_test"   , "Average reading test assessment score at school",
+"math_test" , "Average math test assessment score at school" ) %>% 
+gt() %>% 
+tab_header(title = md("**LCA Indicators & Auxiliary Variables: Harassment & Staff Example**"),
+           subtitle = md("&nbsp;")) %>%
+tab_row_group(group = "LCA Indicator Variables", rows = 1:6) %>% 
+tab_row_group(group = "Auxiliary Variables", rows = 7:9) %>%
+row_group_order(groups = c("LCA Indicator Variables","Auxiliary Variables")) %>% 
+tab_options(column_labels.font.weight = "bold", row_group.font.weight = "bold") %>% 
+tab_footnote(footnote = md("*Note*. Data souce is from the public-use dataset, the 
+*Civil Rights Data Collection* (CRDC; US Department of Education Office for Civil Rights,
+2014)"),locations = cells_title())
 
-- - -
+table1
+```
+
+```{r, echo=FALSE}
+# Save the `gt()` table in the `figures` folder
+
+gtsave(table1, here("figures","Variable_description.png"))
+```
+
+# --------------------------------------------------------------------------------------
 
 Getting started: Load packages & Read in CSV data file from the `data` subfolder
-
-```{r}
+```{r,eval=TRUE}
 library(MplusAutomation) # Conduit between R & Mplus
 library(glue)            # Pasting R code into strings
 library(here)            # Location, location, location
@@ -64,14 +102,13 @@ data_3step <- read_csv(here("data", "crdc_aux_data.csv"))
 
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Auxiliary Variable Integration: Quickly Automate the "Manual 3-Step"!
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Note:** Models `step1_3step.out` & `step2_3step.out` are labeled differently than in the technical documentation for the 3-step procedure. For example, in Asparouhov & Muthén (2014) this syntax corresponds to **steps 1-3**.
-
 ```{r}
 
 m_step1  <- mplusObject(
@@ -112,9 +149,9 @@ m_step1_fit <- mplusModeler(m_step1,
                  modelout=here("3step_mplus", "Step1_3step.inp") ,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 
-- - -
+# --------------------------------------------------------------------------------------
 # Step 2 - Extract logits & saved data from the step 1 unconditional model. 
-- - -
+# --------------------------------------------------------------------------------------
 
 logit_cprobs <- as.data.frame(m_step1_fit[["results"]]
                                          [["class_counts"]]
@@ -125,9 +162,9 @@ savedata <- as.data.frame(m_step1_fit[["results"]]
 
 colnames(savedata)[colnames(savedata)=="C"] <- "N"
 
-- - -
+# --------------------------------------------------------------------------------------
 # Step 2 (part 2) - Estimate the unconditional model with logits from step 2. 
-- - -
+# --------------------------------------------------------------------------------------
 
 m_step2  <- mplusObject(
   TITLE = "Step2  (MANUAL 3-STEP ML APPROACH)", 
@@ -167,13 +204,13 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 1: Distal Outcome Model
 
-
-![](figures/EX1_Distal_Diagram.png)
-
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX1_Distal_Diagram.png")
+```
 
 # -------------------------------------------------------------------------------------
 
@@ -264,16 +301,16 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX1: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Note**: The distal outcome means are estimated at the average of the covariate (`lunch_pr`). This is specified by centering lunch program as shown in the `Step-3` model syntax. 
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX1_Distal_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -281,7 +318,7 @@ model_step3 <- data.frame(model_step3$parameters$unstandardized)
 ```
 
 This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r}
+```{r, eval=TRUE}
 
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Means") %>% 
@@ -298,7 +335,7 @@ distal_data <- model_step3 %>%
 ```
 
 ## Plot distal outcomes grouped by class 
-```{r, }
+```{r, eval=TRUE}
 library(cowplot)
 library(reshape2) 
 
@@ -321,14 +358,15 @@ ggplot(distal_data,
 ggsave(here("figures","EX1_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 2: Distal Outcome Model with Covariate Control.
 
-![](figures/EX2_Dist_Cov_Diagram.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX2_Dist_Cov_Diagram.png")
+```
 
-
-- - -
+# --------------------------------------------------------------------------------------
 
 **Specification details:**
 
@@ -433,16 +471,16 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX2: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Note**: The distal outcome means are estimated at the average of the covariate (`lunch_pr`). This is specified by centering lunch program as shown in the `Step-3` model syntax. 
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX2_Dist_Cov_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -450,7 +488,7 @@ model_step3 <- data.frame(model_step3$parameters$unstandardized)
 ```
 
 This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r, }
+```{r, eval=TRUE}
 
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Intercepts") %>% 
@@ -467,7 +505,7 @@ distal_data <- model_step3 %>%
 ```
 
 ## Plot distal outcomes grouped by class 
-```{r, }
+```{r, eval=TRUE}
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -488,15 +526,15 @@ ggplot(distal_data,
 ggsave(here("figures","EX2_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 3: Moderation Model
 
-```{r}
-![](figures/EX3_Moderation_Diagram.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX3_Moderation_Diagram.png")
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Specification details:**
 
@@ -616,7 +654,7 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ### Estimate step 3 moderation model with covariate un-centered to produce simple-slopes plots 
 
@@ -634,14 +672,14 @@ m_uncen_fit <- mplusModeler(m_uncen,
                             check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX3: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX3_Moderation_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -649,7 +687,7 @@ model_step3 <- data.frame(model_step3$parameters$unstandardized)
 ```
 
 This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r}
+```{r, eval=TRUE}
 
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Intercepts") %>% 
@@ -665,7 +703,7 @@ distal_data <- model_step3 %>%
 ```
 
 ## Plot distal outcomes grouped by class 
-```{r}
+```{r, eval=TRUE}
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -688,16 +726,16 @@ ggsave(here("figures","EX3_Distal_barplot.png"), dpi=300, height=3, width=6, uni
 ```
 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX3: Simple Slope Plots
 
 **Note:** The un-centered distal intercepts represent the conditional means when the binary covariate is at its first level `lunch_pr = 0` (i.e., school does not have a lunch program). Therefore, the conditional mean for `lunch_pr = 1`  (i.e., school has lunch program) can be calculated by adding the associated slope coefficient to the intercept. 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Read in the un-centered model & extract relevant parameters
-```{r}
+```{r, eval=TRUE}
 model_uncen <- readModels(here("3step_mplus", "EX3_Uncentered.out"), quiet = TRUE)
   
 model_uncen <- data.frame(model_uncen$parameters$unstandardized)
@@ -714,14 +752,14 @@ slope_data <- model_uncen %>%
 
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Reading test simple slope graph
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Prepare `data-frame` for plotting
-```{r}
+```{r, eval=TRUE}
 
 read_data <- slope_data %>% 
   filter(str_detect(param, 'READ')) 
@@ -741,7 +779,7 @@ read_pos <- melt(read_wide, id.vars = "LatentClass") %>%
 ```
 
 Plot positive mood simple slope graph
-```{r}
+```{r, eval=TRUE}
 p_plot <- ggplot(read_pos,
             aes(y=value, x=variable,
                 color=LatentClass,
@@ -759,14 +797,14 @@ p_plot <- ggplot(read_pos,
 ```
 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Negative mood simple slope graph 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Prepare `data-frame` for plotting
-```{r}
+```{r, eval=TRUE}
 
 math_data <- slope_data %>% 
   filter(str_detect(param, 'MATH')) 
@@ -786,7 +824,7 @@ plot_math <- melt(math_wide, id.vars = "LatentClass") %>%
 ```
 
 Plot negative mood simple slope graph
-```{r}
+```{r, eval=TRUE}
 n_plot <- ggplot(plot_math,
             aes(y=value, x=variable,
             color=LatentClass,
@@ -803,11 +841,11 @@ n_plot <- ggplot(plot_math,
 
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Combine the two simple slopes graphs for distal outcomes positive & negative mood
 
-```{r}
+```{r, eval=TRUE, fig.align='center', fig.width = 8, fig.height = 6}
 
 library(patchwork) 
 
@@ -819,11 +857,11 @@ p_plot / n_plot # combines plots using the {patchwork} package
 ggsave(here("figures", "EX3_Simple_slopes.png"), dpi=300, height=8.5, width=6.5, units="in")
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## References
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Asparouhov, T., & Muthén, B. O.
 (2014). 
@@ -874,5 +912,5 @@ Wickham et al., (2019).
 Welcome to the tidyverse.
 Journal of Open Source Software, 4(43), 1686, <https://doi.org/10.21105/joss.01686>
 
-- - -
+# --------------------------------------------------------------------------------------
 

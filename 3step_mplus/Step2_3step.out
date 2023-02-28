@@ -1,0 +1,262 @@
+Mplus VERSION 8.6 (Mac)
+MUTHEN & MUTHEN
+02/27/2023   6:41 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Step2  (MANUAL 3-STEP ML APPROACH)
+  DATA:
+  FILE = "/Users/agarber/github/interpret-aux-vars/3step_mplus/Step2_3step.dat";
+
+  VARIABLE:
+  NAMES = REPORT_D REPORT_R REPORT_S COUNSELO PSYCH_FT LAW_FTE LUNCH_PR TITLE1_E
+       TITLE1_S READ_TES MATH_TES CPROB1 CPROB2 CPROB3 N;
+   MISSING=.;
+   nominal=N;
+    USEVAR = n;
+    missing are all (999);
+    classes = c(3);
+  ANALYSIS:
+  estimator = mlr;
+    type = mixture;
+    starts = 0;
+  MODEL:
+  %C#1%
+  [n#1@1.192];
+  [n#2@-3.911];
+
+  %C#2%
+  [n#1@0.28];
+  [n#2@2.292];
+
+  %C#3%
+  [n#1@-1.936];
+  [n#2@-4.247];
+
+
+
+INPUT READING TERMINATED NORMALLY
+
+
+
+
+Step2  (MANUAL 3-STEP ML APPROACH)
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                        2027
+
+Number of dependent variables                                    1
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Unordered categorical (nominal)
+   N
+
+Categorical latent variables
+   C
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+
+Input data file(s)
+  /Users/agarber/github/interpret-aux-vars/3step_mplus/Step2_3step.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    N
+      Category 1    0.282          572.000
+      Category 2    0.095          193.000
+      Category 3    0.623         1262.000
+
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                        2
+
+Loglikelihood
+
+          H0 Value                       -1775.552
+          H0 Scaling Correction Factor      1.0000
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    3555.105
+          Bayesian (BIC)                  3566.333
+          Sample-Size Adjusted BIC        3559.979
+            (n* = (n + 2) / 24)
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1        505.59087          0.24943
+       2        215.50347          0.10632
+       3       1305.90567          0.64426
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1        505.59087          0.24943
+       2        215.50347          0.10632
+       3       1305.90567          0.64426
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1              572          0.28219
+       2              193          0.09521
+       3             1262          0.62259
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.560
+
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   0.675    0.041    0.284
+    2   0.012    0.904    0.084
+    3   0.093    0.014    0.893
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.764    0.005    0.232
+    2   0.108    0.810    0.082
+    3   0.125    0.012    0.863
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1      1.192   -3.911    0.000
+    2      0.280    2.292    0.000
+    3     -1.936   -4.247    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ Means
+    N#1                1.192      0.000    999.000    999.000
+    N#2               -3.911      0.000    999.000    999.000
+
+Latent Class 2
+
+ Means
+    N#1                0.280      0.000    999.000    999.000
+    N#2                2.292      0.000    999.000    999.000
+
+Latent Class 3
+
+ Means
+    N#1               -1.936      0.000    999.000    999.000
+    N#2               -4.247      0.000    999.000    999.000
+
+Categorical Latent Variables
+
+ Means
+    C#1               -0.949      0.086    -11.096      0.000
+    C#2               -1.802      0.088    -20.387      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.606E+00
+       (ratio of smallest to largest eigenvalue)
+
+
+     Beginning Time:  18:41:32
+        Ending Time:  18:41:32
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

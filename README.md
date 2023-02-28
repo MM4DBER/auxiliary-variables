@@ -742,7 +742,7 @@ read_pos <- melt(read_wide, id.vars = "LatentClass") %>%
 
 Plot positive mood simple slope graph
 ```{r}
-p_plot <- ggplot(read_pos,
+r_plot <- ggplot(read_pos,
             aes(y=value, x=variable,
                 color=LatentClass,
                 group=LatentClass,
@@ -787,7 +787,7 @@ plot_math <- melt(math_wide, id.vars = "LatentClass") %>%
 
 Plot negative mood simple slope graph
 ```{r}
-n_plot <- ggplot(plot_math,
+m_plot <- ggplot(plot_math,
             aes(y=value, x=variable,
             color=LatentClass,
             group=LatentClass,
@@ -811,7 +811,7 @@ n_plot <- ggplot(plot_math,
 
 library(patchwork) 
 
-p_plot / n_plot # combines plots using the {patchwork} package
+r_plot / m_plot # combines plots using the {patchwork} package
 
 ```
 

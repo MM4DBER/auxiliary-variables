@@ -22,9 +22,7 @@ The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and
 
 ## What is included in this video tutorial?
 
-> This tutorial covers the interpretation of the results of a mixture model with auxiliary variables. Specifically, an LCA model is specified with relations to covariate and distal outcomes in two examples. Auxiliary variable integration is specified using the 3-step ML auxiliary variable procedure using the `MplusAutomation` package (Hallquist & Wiley, 2018; Vermunt, 2010; Asparouhov & Muthén, 2014). In addition to running the models this tutorial covers plotting the results of distal outcome means and covariate relations in the context of moderation (see example; Nylund-Gibson et al., 2022). 
-
-\newpage
+> This tutorial covers the interpretation of the results of a mixture model with auxiliary variables. Specifically, an LCA model is specified with relations to covariate and distal outcomes in three examples. Auxiliary variable integration is specified using the 3-step ML auxiliary variable procedure using the `MplusAutomation` package (Hallquist & Wiley, 2018; Vermunt, 2010; Asparouhov & Muthén, 2014). In addition to running the models this tutorial covers plotting the results of distal outcome means and covariate relations in the context of moderation (see example; Nylund-Gibson et al., 2022). 
 
 - - -
 
@@ -43,19 +41,31 @@ https://github.com/immerse-ucsb/interpret-aux-vars
 
 **Data access (`R`):** https://github.com/UrbanInstitute/education-data-package-r
 
+![](figures/Variable_description.jpg)
+
 - - -
 
-![]("figures","Variable_description.png"))
+### Previous video tutorials referenced in this series:
+
+**LCA Enumeration**: https://github.com/immerse-ucsb/lca_enum
+
+**3-Step Method:** https://github.com/immerse-ucsb/3-Step-ML-auto
+
+- - -
+
+![](figures/c3_lca_plot.png)
 
 - - -
 
 Getting started: Load packages & Read in CSV data file from the `data` subfolder
-
 ```{r}
 library(MplusAutomation) # Conduit between R & Mplus
 library(glue)            # Pasting R code into strings
 library(here)            # Location, location, location
 library(tidyverse)       # Tidyness
+library(gt)              # Tables
+library(cowplot)         # ggplot theme
+library(reshape2)        # melt() function
 ```
 
 ```{r}
@@ -64,14 +74,15 @@ data_3step <- read_csv(here("data", "crdc_aux_data.csv"))
 
 ```
 
+
+
 - - -
 
 ## Auxiliary Variable Integration: Quickly Automate the "Manual 3-Step"!
 
 - - -
 
-**Note:** Models `step1_3step.out` & `step2_3step.out` are labeled differently than in the technical documentation for the 3-step procedure. For example, in Asparouhov & Muthén (2014) this syntax corresponds to **steps 1-3**.
-
+**Note:** Model steps in this tutorial are labeled differently than in the technical documentation for the 3-step procedure (i.e., Vermunt, 2010; Asparouhov & Muthén, 2014). 
 ```{r}
 
 m_step1  <- mplusObject(
@@ -167,16 +178,17 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ```
 
+
+
 - - -
 
 ## EXAMPLE 1: Distal Outcome Model
 
-
 ![](figures/EX1_Distal_Diagram.png)
 
-- - -
+# -------------------------------------------------------------------------------------
 
-
+Specify the distal outcome model 
 ```{r}
 
 m_step3  <- mplusObject(
@@ -249,11 +261,11 @@ m_step3  <- mplusObject(
   ## 2 models for each outcome variable). This can be done by commenting out 
   ## all but one test and then estimating multiple versions of the model.
    
- "!m01=m02;    !!! Distal outcome omnibus Wald test for `read_tes` !!!
-  !m02=m03;
+ "m01=m02;    !!! Distal outcome omnibus Wald test for `read_tes` !!!
+  m02=m03;
   
-  m1=m2;       !!! Distal outcome omnibus Wald test for `math_tes` !!!
-  m2=m3; ",
+  !m1=m2;       !!! Distal outcome omnibus Wald test for `math_tes` !!!
+  !m2=m3; ",
  
   usevariables = colnames(savedata), 
   rdata = savedata)
@@ -269,8 +281,6 @@ m_step3_fit <- mplusModeler(m_step3,
 ## EX1: Distal Outcome Plot
 
 - - -
-
-**Note**: The distal outcome means are estimated at the average of the covariate (`lunch_pr`). This is specified by centering lunch program as shown in the `Step-3` model syntax. 
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
 ```{r}
@@ -297,10 +307,8 @@ distal_data <- model_step3 %>%
   
 ```
 
-## Plot distal outcomes grouped by class 
-```{r, }
-library(cowplot)
-library(reshape2) 
+Plot distal outcomes grouped by class 
+```{r}
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -320,6 +328,8 @@ ggplot(distal_data,
 ```{r}
 ggsave(here("figures","EX1_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
+
+
 
 - - -
 
@@ -441,16 +451,11 @@ m_step3_fit <- mplusModeler(m_step3,
 
 **Note**: The distal outcome means are estimated at the average of the covariate (`lunch_pr`). This is specified by centering lunch program as shown in the `Step-3` model syntax. 
 
-This syntax reads in the `Step3` model & extract model parameter estimates.
+This syntax reads in the data, extracts relevant parameters, and generates the plot.
 ```{r}
 model_step3 <- readModels(here("3step_mplus", "EX2_Dist_Cov_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
-
-```
-
-This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r, }
 
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Intercepts") %>% 
@@ -463,11 +468,6 @@ distal_data <- model_step3 %>%
                  "Reported Harrasement (High), Staff (Low)",
                  "Reported Harrasement (Low), Staff (Low)"))) %>% 
   mutate(value_labels = round(est,2))
-  
-```
-
-## Plot distal outcomes grouped by class 
-```{r, }
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -492,9 +492,7 @@ ggsave(here("figures","EX2_Distal_barplot.png"), dpi=300, height=3, width=6, uni
 
 ## EXAMPLE 3: Moderation Model
 
-```{r}
 ![](figures/EX3_Moderation_Diagram.png)
-```
 
 - - -
 
@@ -646,11 +644,6 @@ model_step3 <- readModels(here("3step_mplus", "EX3_Moderation_Model.out"), quiet
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
 
-```
-
-This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r}
-
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Intercepts") %>% 
   mutate(param = case_when(
@@ -661,11 +654,6 @@ distal_data <- model_step3 %>%
                  "Reported Harrasement (High), Staff (Low)",
                  "Reported Harrasement (Low), Staff (Low)"))) %>% 
   mutate(value_labels = c("36.4a", "36.3a", "44.5b", "42.8b", "44.9b", "43.4b"))
-  
-```
-
-## Plot distal outcomes grouped by class 
-```{r}
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -686,7 +674,6 @@ ggplot(distal_data,
 ```{r}
 ggsave(here("figures","EX3_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
-
 
 - - -
 
@@ -714,13 +701,7 @@ slope_data <- model_uncen %>%
 
 ```
 
-- - -
-
-## Reading test simple slope graph
-
-- - -
-
-Prepare `data-frame` for plotting
+Prepare `reading test` simple slope data
 ```{r}
 
 read_data <- slope_data %>% 
@@ -740,7 +721,7 @@ read_pos <- melt(read_wide, id.vars = "LatentClass") %>%
 
 ```
 
-Reading test simple slope graph
+Plot `reading test` simple slopes
 ```{r}
 r_plot <- ggplot(read_pos,
             aes(y=value, x=variable,
@@ -754,18 +735,11 @@ r_plot <- ggplot(read_pos,
   theme(text=element_text(size=12), 
         axis.text.x=element_text(size=12),
         legend.text = element_text(size=8),
-        legend.position = "right", legend.title = element_blank()) 
-
+        legend.position = "right", legend.title = element_blank())
 ```
 
 
-- - -
-
-## Math test simple slope graph 
-
-- - -
-
-Prepare `data-frame` for plotting
+Prepare `math test` simple slope data
 ```{r}
 
 math_data <- slope_data %>% 
@@ -785,7 +759,7 @@ plot_math <- melt(math_wide, id.vars = "LatentClass") %>%
 
 ```
 
-Plot math test simple slope graph
+Plot `math test` simple slopes
 ```{r}
 m_plot <- ggplot(plot_math,
             aes(y=value, x=variable,
@@ -805,7 +779,7 @@ m_plot <- ggplot(plot_math,
 
 - - -
 
-## Combine the two simple slopes graphs
+## Combine the two simple slopes graphs 
 
 ```{r}
 

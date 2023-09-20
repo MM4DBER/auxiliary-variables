@@ -1,10 +1,15 @@
 ---
 title: "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal & Moderation Model Examples"
-author: "IMMERSE Project: Adam Garber"
-date: '`r format(Sys.time(), "%B, %d,  %Y")`'
+author: "MM4DBER Training Team"
+date: "Updated: `r format(Sys.time(), '%B %d, %Y')`"
 output:
-  pdf_document: default
-  html_document: default
+  html_document:
+    theme: flatly
+  pdf_document:
+    toc: yes
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
@@ -14,32 +19,31 @@ library(knitr); library(tidyverse); library(gt)
 
 # --------------------------------------------------------------------------------------
 
-```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="40%"}
-include_graphics("figures/IESNewLogo.jpg")
-```
+![](figures/mm4dber_Logo.jpg){style="float: left;" width="300"}
 
-The Institute of Mixture Modeling for Equity-Oriented Researchers, Scholars, and Educators (`IMMERSE`) is an IES funded training grant (R305B220021) to support education scholars in integrating mixture modeling into their research.
+![](figures/NSF-Logo.png){style="float: left;" width="300"}
 
-> Visit our [$\color{blue}{\text{Website}}$](https://immerse.education.ucsb.edu/) to learn more about the IMMERSE project.
+# --------------------------------------------------------------------------------------
 
-> Follow us on [$\color{blue}{\text{Twitter}}$](https://twitter.com/IMMERSE_UCSB) for updates on posted resources!
+> Mixture Modeling for Discipline Based Education Researchers (MM4DBER) is an NSF funded training grant to support STEM Education scholars in integrating mixture modeling into their research.
 
-> Visit our [$\color{blue}{\text{GitHub}}$](https://github.com/immerse-ucsb/) account to follow along with this tutorial & others. 
+#### Download project materials here: [GitHub Repository](https://github.com/MM4DBER/auxiliary-variables)
 
-# -------------------------------------------------------------------------------------- 
+#### Follow along: [Video Tutorial](https://drive.google.com/file/d/1-_BnKdnupJOIMftRtB5XeDMi6XwYVHsr/view?usp=sharing)
+
+#### Return to landing page here: [MM4DBER Landing Page](https://mm4dber.github.io/)
+
+------------------------------------------------------------------------
 
 ## What is included in this video tutorial?
 
 > This tutorial covers the interpretation of the results of a mixture model with auxiliary variables. Specifically, an LCA model is specified with relations to covariate and distal outcomes in three examples. Auxiliary variable integration is specified using the 3-step ML auxiliary variable procedure using the `MplusAutomation` package (Hallquist & Wiley, 2018; Vermunt, 2010; Asparouhov & Muthén, 2014). In addition to running the models this tutorial covers plotting the results of distal outcome means and covariate relations in the context of moderation (see example; Nylund-Gibson et al., 2022). 
 
-\newpage
+### Previous video tutorials referenced in this series:
 
-# --------------------------------------------------------------------------------------
+1. [Introduction to Latent Class Analysis (LCA) with MplusAutomation](https://youtu.be/fPpcScLZFRI?si=S_LgBjBDCbXSuJP9)
 
-**Follow along! Link to `Github` repository:**
-
-$\color{blue}{\text{https://github.com/immerse-ucsb/interpret-aux-vars}}$
-
+2. [3-Step ML Auxiliary Variable Integration Using MplusAutomation](https://youtu.be/MZSFKmTLZRI?si=IWWBCOTBOg8NZx3c)
 
 # --------------------------------------------------------------------------------------
 
@@ -85,14 +89,6 @@ table1
 
 gtsave(table1, here("figures","Variable_description.png"))
 ```
-
-# --------------------------------------------------------------------------------------
-
-### Previous video tutorials referenced in this series:
-
-**LCA Enumeration**: https://github.com/immerse-ucsb/lca_enum
-
-**3-Step Method:** https://github.com/immerse-ucsb/3-Step-ML-auto
 
 # --------------------------------------------------------------------------------------
 

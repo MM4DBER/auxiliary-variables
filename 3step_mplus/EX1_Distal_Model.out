@@ -1,0 +1,374 @@
+Mplus VERSION 8.6 (Mac)
+MUTHEN & MUTHEN
+09/20/2023   1:08 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Distal Outcome Model (Step3)
+  DATA:
+  FILE = "/Users/agarber/github/auxiliary-variables/3step_mplus/EX1_Distal_Model.dat";
+
+  VARIABLE:
+  NAMES = REPORT_D REPORT_R REPORT_S COUNSELO PSYCH_FT LAW_FTE LUNCH_PR TITLE1_E
+       TITLE1_S READ_TES MATH_TES CPROB1 CPROB2 CPROB3 N;
+   MISSING=.;
+   nominal = N;
+    usevar = n;
+    missing are all (999);
+
+    usevar = read_tes math_tes;
+    classes = c(3);
+  ANALYSIS:
+  estimator = mlr;
+    type = mixture;
+    starts = 0;
+  MODEL:
+  !!! DISTAL OUTCOMES = read_tes math_tes !!!
+
+  %OVERALL%
+
+  read_tes;
+  math_tes;
+
+  %C#1%
+  [n#1@1.192];
+  [n#2@-3.911];
+
+  [read_tes](m01);               !!! estimate conditional intercept mean !!!
+  read_tes;                      !!! estimate conditional intercept variance !!!
+
+  [math_tes] (m1);
+  math_tes;
+
+  %C#2%
+  [n#1@0.28];
+  [n#2@2.292];
+
+  [read_tes](m02);
+  read_tes;
+
+  [math_tes] (m2);
+  math_tes;
+
+  %C#3%
+  [n#1@-1.936];
+  [n#2@-4.247];
+
+  [read_tes](m03);
+  read_tes;
+
+  [math_tes] (m3);
+  math_tes;
+  MODEL CONSTRAINT:
+  New (rdiff12 rdiff13
+    rdiff23 mdiff12 mdiff13
+    mdiff23);
+
+    rdiff12 = m1-m2;   mdiff12 = m01-m02;
+    rdiff13 = m1-m3;   mdiff13 = m01-m03;
+    rdiff23 = m2-m3;   mdiff23 = m02-m03;
+  MODEL TEST:
+  m01=m02;    !!! Distal outcome omnibus Wald test for `read_tes` !!!
+    m02=m03;
+
+    !m1=m2;       !!! Distal outcome omnibus Wald test for `math_tes` !!!
+    !m2=m3;
+
+
+
+*** WARNING in MODEL command
+  All variables are uncorrelated with all other variables within class.
+  Check that this is what is intended.
+   1 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Distal Outcome Model (Step3)
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                        2027
+
+Number of dependent variables                                    3
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Continuous
+   READ_TES    MATH_TES
+
+  Unordered categorical (nominal)
+   N
+
+Categorical latent variables
+   C
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+
+Input data file(s)
+  /Users/agarber/github/auxiliary-variables/3step_mplus/EX1_Distal_Model.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             3
+     Number of y missing data patterns           3
+     Number of u missing data patterns           0
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              READ_TES      MATH_TES
+              ________      ________
+ READ_TES       0.924
+ MATH_TES       0.922         0.922
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    N
+      Category 1    0.282          572.000
+      Category 2    0.095          193.000
+      Category 3    0.623         1262.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     READ_TES             42.765       0.309       2.000    0.05%      24.500     34.000     40.000
+            1873.000     405.348      -0.699      99.500    0.05%      47.000     62.000
+     MATH_TES             41.580       0.336       0.500    0.05%      24.000     33.000     39.000
+            1869.000     431.377      -0.666      97.500    0.11%      46.000     62.000
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       14
+
+Loglikelihood
+
+          H0 Value                      -17832.087
+          H0 Scaling Correction Factor      1.3501
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                   35692.174
+          Bayesian (BIC)                 35770.774
+          Sample-Size Adjusted BIC       35726.295
+            (n* = (n + 2) / 24)
+
+Wald Test of Parameter Constraints
+
+          Value                           2465.316
+          Degrees of Freedom                     2
+          P-Value                           0.0000
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1        850.63244          0.41965
+       2        190.56113          0.09401
+       3        985.80643          0.48634
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1        850.63244          0.41965
+       2        190.56113          0.09401
+       3        985.80643          0.48634
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1              861          0.42477
+       2              144          0.07104
+       3             1022          0.50419
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.773
+
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   0.912    0.040    0.048
+    2   0.039    0.911    0.050
+    3   0.059    0.024    0.917
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.923    0.007    0.070
+    2   0.182    0.689    0.129
+    3   0.042    0.007    0.951
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1      2.575   -2.377    0.000
+    2      0.347    1.676    0.000
+    3     -3.131   -4.866    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ Means
+    READ_TES          26.256      0.725     36.206      0.000
+    MATH_TES          24.859      0.763     32.598      0.000
+
+ Means
+    N#1                1.192      0.000    999.000    999.000
+    N#2               -3.911      0.000    999.000    999.000
+
+ Variances
+    READ_TES          95.850      6.207     15.443      0.000
+    MATH_TES         107.947      6.785     15.909      0.000
+
+Latent Class 2
+
+ Means
+    READ_TES          34.754      3.379     10.285      0.000
+    MATH_TES          32.708      3.513      9.310      0.000
+
+ Means
+    N#1                0.280      0.000    999.000    999.000
+    N#2                2.292      0.000    999.000    999.000
+
+ Variances
+    READ_TES         149.704     38.695      3.869      0.000
+    MATH_TES         156.057     40.644      3.840      0.000
+
+Latent Class 3
+
+ Means
+    READ_TES          59.726      0.980     60.931      0.000
+    MATH_TES          58.894      1.014     58.083      0.000
+
+ Means
+    N#1               -1.936      0.000    999.000    999.000
+    N#2               -4.247      0.000    999.000    999.000
+
+ Variances
+    READ_TES         191.950     11.754     16.331      0.000
+    MATH_TES         213.329     12.423     17.172      0.000
+
+Categorical Latent Variables
+
+ Means
+    C#1               -0.147      0.093     -1.587      0.113
+    C#2               -1.643      0.159    -10.306      0.000
+
+New/Additional Parameters
+    RDIFF12           -7.849      3.649     -2.151      0.031
+    RDIFF13          -34.035      0.779    -43.670      0.000
+    RDIFF23          -26.186      3.361     -7.792      0.000
+    MDIFF12           -8.498      3.495     -2.432      0.015
+    MDIFF13          -33.471      0.736    -45.493      0.000
+    MDIFF23          -24.973      3.235     -7.719      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.172E-03
+       (ratio of smallest to largest eigenvalue)
+
+
+     Beginning Time:  13:08:49
+        Ending Time:  13:08:49
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

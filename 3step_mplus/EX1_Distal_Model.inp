@@ -1,0 +1,70 @@
+TITLE:
+Distal Outcome Model (Step3)
+DATA:
+FILE = "/Users/agarber/github/auxiliary-variables/3step_mplus/EX1_Distal_Model.dat";
+ 
+VARIABLE:
+NAMES = REPORT_D REPORT_R REPORT_S COUNSELO PSYCH_FT LAW_FTE LUNCH_PR TITLE1_E
+     TITLE1_S READ_TES MATH_TES CPROB1 CPROB2 CPROB3 N; 
+ MISSING=.;
+ nominal = N;
+  usevar = n;
+  missing are all (999); 
+  
+  usevar = read_tes math_tes;
+  classes = c(3); 
+ANALYSIS:
+estimator = mlr; 
+  type = mixture; 
+  starts = 0;
+MODEL:
+!!! DISTAL OUTCOMES = read_tes math_tes !!!
+
+%OVERALL%
+ 
+read_tes;
+math_tes;
+
+%C#1%
+[n#1@1.192];
+[n#2@-3.911];
+
+[read_tes](m01);               !!! estimate conditional intercept mean !!!
+read_tes;                      !!! estimate conditional intercept variance !!!
+
+[math_tes] (m1);
+math_tes;
+
+%C#2%
+[n#1@0.28];
+[n#2@2.292];
+
+[read_tes](m02);
+read_tes;
+
+[math_tes] (m2);
+math_tes;
+
+%C#3%
+[n#1@-1.936];
+[n#2@-4.247];
+
+[read_tes](m03);
+read_tes;
+
+[math_tes] (m3);
+math_tes;  
+MODEL CONSTRAINT:
+New (rdiff12 rdiff13
+  rdiff23 mdiff12 mdiff13
+  mdiff23);
+
+  rdiff12 = m1-m2;   mdiff12 = m01-m02;
+  rdiff13 = m1-m3;   mdiff13 = m01-m03;
+  rdiff23 = m2-m3;   mdiff23 = m02-m03;
+MODEL TEST:
+m01=m02;    !!! Distal outcome omnibus Wald test for `read_tes` !!!
+  m02=m03;
+  
+  !m1=m2;       !!! Distal outcome omnibus Wald test for `math_tes` !!!
+  !m2=m3; 

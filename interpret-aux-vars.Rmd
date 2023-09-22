@@ -1,12 +1,29 @@
-## Video tutorial repository: "auxiliary-variables"
+---
+title: "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal & Moderation Model Examples"
+author: "MM4DBER Training Team"
+date: "Updated: `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    theme: flatly
+  pdf_document:
+    toc: yes
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
 
-- - -
+```{r setup, include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(eval = FALSE, echo = TRUE, message = FALSE, warning = FALSE) 
+library(knitr); library(tidyverse); library(gt) 
+```
 
-### "Interpret & Summarize Mixture Models with Auxiliary Variables: Distal & Moderation Model Examples
+# --------------------------------------------------------------------------------------
 
-#### MM4DBER Training Team: Adam Garber
+![](figures/mm4dber_Logo.jpg){style="float: left;" width="300"}
 
-- - -
+![](figures/NSF-Logo.png){style="float: left;" width="300"}
+
+# --------------------------------------------------------------------------------------
 
 > Mixture Modeling for Discipline Based Education Researchers (MM4DBER) is an NSF funded training grant to support STEM Education scholars in integrating mixture modeling into their research.
 
@@ -16,20 +33,19 @@
 
 #### Return to landing page here: [MM4DBER Landing Page](https://mm4dber.github.io/)
 
-- - -
+------------------------------------------------------------------------
 
 ## What is included in this video tutorial?
 
 > This tutorial covers the interpretation of the results of a mixture model with auxiliary variables. Specifically, an LCA model is specified with relations to covariate and distal outcomes in three examples. Auxiliary variable integration is specified using the 3-step ML auxiliary variable procedure using the `MplusAutomation` package (Hallquist & Wiley, 2018; Vermunt, 2010; Asparouhov & Muthén, 2014). In addition to running the models this tutorial covers plotting the results of distal outcome means and covariate relations in the context of moderation (see example; Nylund-Gibson et al., 2022). 
 
-- - -
+### Previous video tutorials referenced in this series:
 
-**Follow along! Link to `Github` repository:**
+1. [Introduction to Latent Class Analysis (LCA) with MplusAutomation](https://youtu.be/fPpcScLZFRI?si=S_LgBjBDCbXSuJP9)
 
-https://github.com/immerse-ucsb/interpret-aux-vars
+2. [3-Step ML Auxiliary Variable Integration Using MplusAutomation](https://youtu.be/MZSFKmTLZRI?si=IWWBCOTBOg8NZx3c)
 
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ### Data Source: Civil Rights Data Collection (CRDC)
 
@@ -39,24 +55,51 @@ https://github.com/immerse-ucsb/interpret-aux-vars
 
 **Data access (`R`):** https://github.com/UrbanInstitute/education-data-package-r
 
-![](figures/Variable_description.jpg)
+```{r, eval=TRUE, echo=FALSE}
+### Present variables table syntax: Take a look at the indicators that compose the LCA ###
 
-- - -
+table1 <- tribble(
+~"Name", ~"Description", 
+#----------|-------------|,
+"report_dis"  , "Number of students harassed or bullied on the basis of disability" ,
+"report_race" , "Number of students harassed or bullied on the basis of race, color, or national origin " ,
+"report_sex" , "Number of students harassed or bullied on the basis of sex" ,
+"counselors_fte"  , "Number of full time equivalent counselors hired as school staff" ,
+"psych_fte"   , " Number of full time equivalent psychologists hired as school staff" ,
+"law_fte"   , "Number of full time equivalent law enforcement officers hired as school staff" ,
+"lunch_program"   , "School has a lunch program (0=No lunch program, 1=Lunch program at school).",
+"read_test"   , "Average reading test assessment score at school",
+"math_test" , "Average math test assessment score at school" ) %>% 
+gt() %>% 
+tab_header(title = md("**LCA Indicators & Auxiliary Variables: Harassment & Staff Example**"),
+           subtitle = md("&nbsp;")) %>%
+tab_row_group(group = "LCA Indicator Variables", rows = 1:6) %>% 
+tab_row_group(group = "Auxiliary Variables", rows = 7:9) %>%
+row_group_order(groups = c("LCA Indicator Variables","Auxiliary Variables")) %>% 
+tab_options(column_labels.font.weight = "bold", row_group.font.weight = "bold") %>% 
+tab_footnote(footnote = md("*Note*. Data souce is from the public-use dataset, the 
+*Civil Rights Data Collection* (CRDC; US Department of Education Office for Civil Rights,
+2014)"),locations = cells_title())
 
-### Previous video tutorials referenced in this series:
+table1
+```
 
-**LCA Enumeration**: https://github.com/immerse-ucsb/lca_enum
+```{r, echo=FALSE}
+# Save the `gt()` table in the `figures` folder
 
-**3-Step Method:** https://github.com/immerse-ucsb/3-Step-ML-auto
+gtsave(table1, here("figures","Variable_description.png"))
+```
 
-- - -
+# --------------------------------------------------------------------------------------
 
-![](figures/c3_lca_plot.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="100%"}
+include_graphics("figures/c3_lca_plot.png")
+```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Getting started: Load packages & Read in CSV data file from the `data` subfolder
-```{r}
+```{r,eval=TRUE}
 library(MplusAutomation) # Conduit between R & Mplus
 library(glue)            # Pasting R code into strings
 library(here)            # Location, location, location
@@ -72,13 +115,13 @@ data_3step <- read_csv(here("data", "crdc_aux_data.csv"))
 
 ```
 
+\newpage
 
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Auxiliary Variable Integration: Quickly Automate the "Manual 3-Step"!
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Note:** Model steps in this tutorial are labeled differently than in the technical documentation for the 3-step procedure (i.e., Vermunt, 2010; Asparouhov & Muthén, 2014). 
 ```{r}
@@ -121,9 +164,9 @@ m_step1_fit <- mplusModeler(m_step1,
                  modelout=here("3step_mplus", "Step1_3step.inp") ,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 
-- - -
+# --------------------------------------------------------------------------------------
 # Step 2 - Extract logits & saved data from the step 1 unconditional model. 
-- - -
+# --------------------------------------------------------------------------------------
 
 logit_cprobs <- as.data.frame(m_step1_fit[["results"]]
                                          [["class_counts"]]
@@ -134,9 +177,9 @@ savedata <- as.data.frame(m_step1_fit[["results"]]
 
 colnames(savedata)[colnames(savedata)=="C"] <- "N"
 
-- - -
+# --------------------------------------------------------------------------------------
 # Step 2 (part 2) - Estimate the unconditional model with logits from step 2. 
-- - -
+# --------------------------------------------------------------------------------------
 
 m_step2  <- mplusObject(
   TITLE = "Step2  (MANUAL 3-STEP ML APPROACH)", 
@@ -176,15 +219,17 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ```
 
+\newpage
 
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 1: Distal Outcome Model
 
-![](figures/EX1_Distal_Diagram.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX1_Distal_Diagram.png")
+```
 
-- - -
+# -------------------------------------------------------------------------------------
 
 Specify the distal outcome model 
 ```{r}
@@ -274,14 +319,14 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX1: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX1_Distal_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -289,7 +334,7 @@ model_step3 <- data.frame(model_step3$parameters$unstandardized)
 ```
 
 This syntax is used to create the `data-frame` that produces the distal outcome bar plot.
-```{r}
+```{r, eval=TRUE}
 
 distal_data <- model_step3 %>% 
   filter(paramHeader == "Means") %>% 
@@ -306,7 +351,7 @@ distal_data <- model_step3 %>%
 ```
 
 Plot distal outcomes grouped by class 
-```{r}
+```{r, eval=TRUE}
 
 ggplot(distal_data, 
        aes(fill=LatentClass, y=est, x=fct_rev(param))) + 
@@ -323,21 +368,21 @@ ggplot(distal_data,
 
 ```
 
-
 ```{r}
 ggsave(here("figures","EX1_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-![](figures/EX1_Distal_barplot.png)
+\newpage
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 2: Distal Outcome Model with Covariate Control.
 
-![](figures/EX2_Dist_Cov_Diagram.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX2_Dist_Cov_Diagram.png")
+```
 
-
-- - -
+# --------------------------------------------------------------------------------------
 
 **Specification details:**
 
@@ -442,16 +487,16 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX2: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Note**: The distal outcome means are estimated at the average of the covariate (`lunch_pr`). This is specified by centering lunch program as shown in the `Step-3` model syntax. 
 
 This syntax reads in the data, extracts relevant parameters, and generates the plot.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX2_Dist_Cov_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -487,15 +532,15 @@ ggplot(distal_data,
 ggsave(here("figures","EX2_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-![](figures/EX2_Distal_barplot.png)
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EXAMPLE 3: Moderation Model
 
-![](figures/EX3_Moderation_Diagram.png)
+```{r, echo=FALSE, eval=TRUE, fig.align='center', out.width="80%"}
+include_graphics("figures/EX3_Moderation_Diagram.png")
+```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 **Specification details:**
 
@@ -615,7 +660,7 @@ m_step3_fit <- mplusModeler(m_step3,
                  check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ### Estimate step 3 moderation model with covariate un-centered to produce simple-slopes plots 
 
@@ -633,14 +678,14 @@ m_uncen_fit <- mplusModeler(m_uncen,
                             check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX3: Distal Outcome Plot
 
-- - -
+# --------------------------------------------------------------------------------------
 
 This syntax reads in the `Step3` model & extract model parameter estimates.
-```{r}
+```{r, eval=TRUE}
 model_step3 <- readModels(here("3step_mplus", "EX3_Moderation_Model.out"), quiet = TRUE)
   
 model_step3 <- data.frame(model_step3$parameters$unstandardized)
@@ -676,18 +721,16 @@ ggplot(distal_data,
 ggsave(here("figures","EX3_Distal_barplot.png"), dpi=300, height=3, width=6, units="in")  
 ```
 
-#### ![](figures/EX3_Distal_barplot.png)
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ## EX3: Simple Slope Plots
 
 **Note:** The un-centered distal intercepts represent the conditional means when the binary covariate is at its first level `lunch_pr = 0` (i.e., school does not have a lunch program). Therefore, the conditional mean for `lunch_pr = 1`  (i.e., school has lunch program) can be calculated by adding the associated slope coefficient to the intercept. 
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Read in the un-centered model & extract relevant parameters
-```{r}
+```{r, eval=TRUE}
 model_uncen <- readModels(here("3step_mplus", "EX3_Uncentered.out"), quiet = TRUE)
   
 model_uncen <- data.frame(model_uncen$parameters$unstandardized)
@@ -705,7 +748,7 @@ slope_data <- model_uncen %>%
 ```
 
 Prepare `reading test` simple slope data
-```{r}
+```{r, eval=TRUE}
 
 read_data <- slope_data %>% 
   filter(str_detect(param, 'READ')) 
@@ -725,7 +768,7 @@ read_pos <- melt(read_wide, id.vars = "LatentClass") %>%
 ```
 
 Plot `reading test` simple slopes
-```{r}
+```{r, eval=TRUE}
 r_plot <- ggplot(read_pos,
             aes(y=value, x=variable,
                 color=LatentClass,
@@ -743,7 +786,7 @@ r_plot <- ggplot(read_pos,
 
 
 Prepare `math test` simple slope data
-```{r}
+```{r, eval=TRUE}
 
 math_data <- slope_data %>% 
   filter(str_detect(param, 'MATH')) 
@@ -763,7 +806,7 @@ plot_math <- melt(math_wide, id.vars = "LatentClass") %>%
 ```
 
 Plot `math test` simple slopes
-```{r}
+```{r, eval=TRUE}
 m_plot <- ggplot(plot_math,
             aes(y=value, x=variable,
             color=LatentClass,
@@ -780,11 +823,11 @@ m_plot <- ggplot(plot_math,
 
 ```
 
-- - -
+# --------------------------------------------------------------------------------------
 
 ## Combine the two simple slopes graphs 
 
-```{r}
+```{r, eval=TRUE, fig.align='center', fig.width = 8, fig.height = 6}
 
 library(patchwork) 
 
@@ -796,13 +839,11 @@ r_plot / m_plot # combines plots using the {patchwork} package
 ggsave(here("figures", "EX3_Simple_slopes.png"), dpi=300, height=8.5, width=6.5, units="in")
 ```
 
-![](figures/EX3_Simple_slopes.png)
-
-- - -
+# --------------------------------------------------------------------------------------
 
 ## References
 
-- - -
+# --------------------------------------------------------------------------------------
 
 Asparouhov, T., & Muthén, B. O.
 (2014). 
@@ -853,5 +894,5 @@ Wickham et al., (2019).
 Welcome to the tidyverse.
 Journal of Open Source Software, 4(43), 1686, <https://doi.org/10.21105/joss.01686>
 
-- - -
+# --------------------------------------------------------------------------------------
 
